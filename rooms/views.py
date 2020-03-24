@@ -6,12 +6,13 @@ from . import models
 def all_rooms(request):
     page = request.GET.get("page", 1)
     page = int(page or 1)
+    if page <= 0:
+        page = 1
     page_size = 10
     page_limit = page_size * page
     page_offset = page_limit - page_size
     all_rooms = models.Room.objects.all()[page_offset:page_limit]
     page_count = ceil(models.Room.objects.count() / page_size)
-    page_range = range(1, page_count + 1)
     return render(
         request,
         "rooms/home.html",
@@ -19,6 +20,6 @@ def all_rooms(request):
             "rooms": all_rooms,
             "page": page,
             "page_count": page_count,
-            "page_range": page_range,
+            "page_range": range(1, page_count + 1),
         },
     )

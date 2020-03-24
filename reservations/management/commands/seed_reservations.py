@@ -1,12 +1,13 @@
 import random
+from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from django.contrib.admin.utils import flatten
 from django_seed import Seed
-from lists.models import List
+from reservations.models import Reservation
 from users.models import User
 from rooms.models import Room
 
-NAME = "lists"
+NAME = "reservations"
 
 
 class Command(BaseCommand):
@@ -26,12 +27,18 @@ class Command(BaseCommand):
         users = User.objects.all()
         rooms = Room.objects.all()
         seeder.add_entity(
-            List, number, {"user": lambda x: random.choice(users),},
+            Reservation,
+            number,
+            {
+                "status": lambda x: random.choice(["pending", "confirmed", "canceled"]),
+                "guest": lambda x: random.choice(users),
+                "room": lambda x: random.choice(rooms),
+                "check_in": lambda x: datetime.now()
+                - timedelta(days=random.randint(0, 5)),
+                "check_out": lambda x: datetime.now()
+                + timedelta(days=random.randint(3, 25)),
+            },
         )
-        created_lists = flatten(list(seeder.execute().values()))
-        for keys in created_lists:
-            Lists = List.objects.get(pk=keys)
-            to_add = rooms[random.randint(0, 5) : random.randint(6, 30)]
-            Lists.rooms.add(*to_add)
+        seeder.execute()
 
         self.stdout.write(self.style.SUCCESS(f"{number} {NAME} created."))

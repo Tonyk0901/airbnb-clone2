@@ -12,4 +12,4 @@ class Command(BaseCommand):
         ]
         for r in room_types:
             room_model.RoomType.objects.create(name=r)
-        self.stdout.write(self.style.SUCCESS("4 Room_Type created."))
+        self.stdout.write(self.style.SUCCESS("4 room types created."))

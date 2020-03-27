@@ -3,8 +3,13 @@
 {% block page_name %} Home {% endblock page_name %}
 
 {% block content %} 
-    {% for r in object_list %}
-        <h1>{{r.name}} / ${{r.price}}</h1>
+    {{now}}
+    {% for r in rooms %}
+        <h3>
+            <a href = "{% url "rooms:detail" r.pk %}">
+                {{r.name}} / ${{r.price}}
+            </a>
+        </h3>
     {% endfor %}
     <h5>
     {% if page_obj.has_previous %}

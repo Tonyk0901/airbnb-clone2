@@ -52,6 +52,7 @@ class RoomAdmin(admin.ModelAdmin):
         "country",
         "city",
         "price",
+        "room_type",
         "guests",
         "beds",
         "bedrooms",

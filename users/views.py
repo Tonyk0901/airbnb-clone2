@@ -77,16 +77,16 @@ def github_callback(request):
         client_id = os.environ.get("GH_ID")
         client_secret = os.environ.get("GH_SECRET")
         if code is not None:
-            result = requests.post(
+            token_request = requests.post(
                 f"https://github.com/login/oauth/access_token?client_id={client_id}&client_secret={client_secret}&code={code}",
                 headers={"Accept": "application/json"},  # Get results in json format.
             )
-            result_json = result.json()
-            error = result_json.get("error", None)
+            token_json = token_request.json()
+            error = token_json.get("error", None)
             if error is not None:  # Check if request is errored.
                 raise GitHubException()
             else:
-                access_token = result_json.get("access_token")  # Get access token.
+                access_token = token_json.get("access_token")  # Get access token.
                 profile_request = requests.get(
                     "https://api.github.com/user",
                     headers={
@@ -100,7 +100,24 @@ def github_callback(request):
                     name = profile_json.get("name")
                     email = profile_json.get("email")
                     bio = profile_json.get("bio")
-                    user = models.User.objects.get(email=email)
+                    try:
+                        user = models.User.objects.get(email=email)
+                        if (
+                            user.login_method != models.User.LOGIN_GITHUB
+                        ):  # Check if the user exists as github login.
+                            raise GitHubException()
+                    except models.User.DoesNotExist:  # If not exist, create new user.
+                        user = models.User.objects.create(
+                            email=email,
+                            first_name=name,
+                            bio=bio,
+                            username=email,
+                            login_method=models.User.LOGIN_GITHUB,
+                        )
+                        user.set_unusable_password()
+                        user.save()
+                    login(request, user)
+                    return redirect(reverse("core:home"))
                 else:
                     raise GitHubException()
         else:

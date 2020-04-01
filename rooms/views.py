@@ -26,17 +26,36 @@ def search(request):
     city = str.capitalize(request.GET.get("city", "Anywhere"))
     country = request.GET.get("country", "KR")
     room_type = int(request.GET.get("room_type", 0))
+
+    price = int(request.GET.get("price", 1))
+    guests = int(request.GET.get("guests", 1))
+    bedrooms = int(request.GET.get("bedrooms", 1))
+    beds = int(request.GET.get("beds", 1))
+    baths = int(request.GET.get("baths", 1))
+
+    s_amenities = request.GET.get("amenities")
+    s_facilities = request.GET.get("facilities")
+
     room_types = models.RoomType.objects.all()
+    amenities = models.Amenity.objects.all()
+    facilities = models.Facility.objects.all()
 
     form = {
         "city": city,
         "selected_country": country,
         "selected_room_type": room_type,
+        "price": price,
+        "guests": guests,
+        "bedrooms": bedrooms,
+        "beds": beds,
+        "baths": baths,
     }
 
     choices = {
         "countries": countries,
         "room_types": room_types,
+        "amenities": amenities,
+        "facilities": facilities,
     }
 
     return render(request, "rooms/search.html", {**form, **choices},)

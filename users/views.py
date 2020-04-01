@@ -67,8 +67,43 @@ def github_login(request):
     )
 
 
+class GitHubException(Exception):
+    pass
+
+
 def github_callback(request):
-    code = request.GET.get("code", None)
-    if code is not None:
-        pass
-    return redirect(reverse("core:home"))
+    try:
+        code = request.GET.get("code", None)
+        client_id = os.environ.get("GH_ID")
+        client_secret = os.environ.get("GH_SECRET")
+        if code is not None:
+            result = requests.post(
+                f"https://github.com/login/oauth/access_token?client_id={client_id}&client_secret={client_secret}&code={code}",
+                headers={"Accept": "application/json"},  # Get results in json format.
+            )
+            result_json = result.json()
+            error = result_json.get("error", None)
+            if error is not None:  # Check if request is errored.
+                raise GitHubException()
+            else:
+                access_token = result_json.get("access_token")  # Get access token.
+                profile_request = requests.get(
+                    "https://api.github.com/user",
+                    headers={
+                        "Authorization": f"token {access_token}",  # Retrieve info using the token.
+                        "Accept": "application/json",
+                    },
+                )
+                profile_json = profile_request.json()
+                username = profile_json.get("login", None)
+                if username is not None:
+                    name = profile_json.get("name")
+                    email = profile_json.get("email")
+                    bio = profile_json.get("bio")
+                    user = models.User.objects.get(email=email)
+                else:
+                    raise GitHubException()
+        else:
+            raise GitHubException()
+    except GitHubException:
+        return redirect(reverse("users:login"))

@@ -32,9 +32,11 @@ def search(request):
     bedrooms = int(request.GET.get("bedrooms", 1))
     beds = int(request.GET.get("beds", 1))
     baths = int(request.GET.get("baths", 1))
+    instant = request.Get.get("instant", False)
+    super_host = request.Get.get("super_host", False)
 
-    s_amenities = request.GET.get("amenities")
-    s_facilities = request.GET.get("facilities")
+    s_amenities = request.GET.getlist("amenities")
+    s_facilities = request.GET.getlist("facilities")
 
     room_types = models.RoomType.objects.all()
     amenities = models.Amenity.objects.all()
@@ -49,6 +51,10 @@ def search(request):
         "bedrooms": bedrooms,
         "beds": beds,
         "baths": baths,
+        "s_amenities": s_amenities,
+        "s_facilities": s_facilities,
+        "instant": instant,
+        "super_host": super_host,
     }
 
     choices = {

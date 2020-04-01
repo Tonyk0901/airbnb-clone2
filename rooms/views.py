@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView
 from django.http import Http404
 from django.urls import reverse
+from django_countries import countries
 from django.shortcuts import render, redirect
 from . import models
 
@@ -15,14 +16,6 @@ class HomeView(ListView):
     ordering = "created"
 
 
-# def room_detail(request, pk):
-#     try:
-#         room = models.Room.objects.get(pk=pk)
-#         return render(request, "rooms/detail.html", {"room": room})
-#     except models.Room.DoesNotExist:
-#         raise Http404
-
-
 class RoomDetail(DetailView):
     """ Room Detail View Definitino """
 
@@ -30,5 +23,10 @@ class RoomDetail(DetailView):
 
 
 def search(request):
-    city = str.capitalize(request.GET.get("city"))
-    return render(request, "rooms/search.html", {"city": city})
+    city = str.capitalize(request.GET.get("city", "Anywhere"))
+    room_types = models.RoomType.objects.all()
+    return render(
+        request,
+        "rooms/search.html",
+        {"city": city, "countries": countries, "room_types": room_types},
+    )

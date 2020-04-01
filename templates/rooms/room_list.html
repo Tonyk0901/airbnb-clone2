@@ -3,7 +3,6 @@
 {% block page_title %} Home {% endblock page_title %}
 
 {% block content %} 
-    {{now}}
     {% for r in rooms %}
         <h3>
             <a href = "{% url "rooms:detail" r.pk %}">

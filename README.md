@@ -6,13 +6,13 @@ Cloning Airbnb using Python, Django, Tailwind.
 ## Django
 ![b1](https://github.com/Tonyk0901/airbnb-clone2/blob/master/githubphoto/b1.png)
 ![djang2](https://github.com/Tonyk0901/airbnb-clone2/blob/master/githubphoto/djang2.png)
-Simply filling in the frame, Django creates front end.
+### Simply filling in the frame, Django creates front end.
 
 ## Admin Panel
 ![b2](https://github.com/Tonyk0901/airbnb-clone2/blob/master/githubphoto/b2.png)
-Admin Panel main. Have access to all data.
+### Admin Panel main. Have access to all data.
 ![djang1](https://github.com/Tonyk0901/airbnb-clone2/blob/master/githubphoto/djang1.png)
-Admin Panel can modify user informations.
+### Admin Panel can modify user informations.
 ![b3](https://github.com/Tonyk0901/airbnb-clone2/blob/master/githubphoto/b3.png)
 
 

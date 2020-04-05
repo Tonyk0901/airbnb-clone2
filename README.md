@@ -55,5 +55,5 @@ Can access through following link.
 
 http://airbnb-clone2.eba-mqipv6pg.us-west-2.elasticbeanstalk.com/
 
-Succeeded in deploying the web app into server.
+"Succeeded in deploying the web app into server."
 Still figuring out how to connect the DB stored in AWS RDS.
